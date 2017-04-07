@@ -17,7 +17,7 @@ echo "initial provisioning.. no vagrant key loaded yet"
 fi
 
 ls -la /home/vagrant/ansible-tower-setup-bundle-latest.el7.tar.gz
-if [ $? -eq 0 ]; then
+if [ $? -eq 0 ];
 then
 wget https://releases.ansible.com/ansible-tower/setup-bundle/ansible-tower-setup-bundle-latest.el7.tar.gz
 else
