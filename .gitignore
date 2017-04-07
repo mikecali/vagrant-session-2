@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-*.retry
-*.swp
-=======
 *.vagrant
 *.retry
 *.work
->>>>>>> 1d4b969e22b14eb12331cda4a574c6776be35908
+*.disk*

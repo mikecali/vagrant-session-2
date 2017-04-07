@@ -24,10 +24,6 @@ else
 echo "no need"
 fi
 
-tar -xvf /home/vagrant/ansible-tower-setup-bundle-latest.el7.tar.gz >> /dev/null
-chown -R vagrant:vagrant /home/vagrant/*
-/bin/bash /home/vagrant/ansible-tower-setup-bundle-3.1.2-1.el7/setup.sh >> /dev/null
-
 #sudo yum install lsb-core-noarch -y
 #rpm -qa | grep atom
 #if [ $? -eq 1 ]; then 

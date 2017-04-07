@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-file_to_disk0 = 'disks/large_disk0.vdi'
-file_to_disk1 = 'disks/large_disk1.vdi'
+file_to_disk0 = '.disks/large_disk0.vdi'
+file_to_disk1 = '.disks/large_disk1.vdi'
 
 Vagrant.configure("2") do |config|
 # Define VMs with static private IP addresses, vcpu, memory and vagrant-box.
