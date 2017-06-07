@@ -6,26 +6,26 @@ file_to_disk1 = '.disks/large_disk1.vdi'
 Vagrant.configure("2") do |config|
 # Define VMs with static private IP addresses, vcpu, memory and vagrant-box.
   boxes = [
-    { 
-      :name => "client1", 
-      :box => "Datacom_Centos7.2base",
+    {
+      :name => "client1",
+      :box => "bento/centos-7.3",
       :ram => 2048,
       :vcpu => 1,
-      :ip => "192.168.29.2" 
+      :ip => "192.168.29.2"
     },
-    { 
+    {
       :name => "client2",
-      :box => "Datacom_Centos7.2base", 
+      :box => "bento/centos-7.3",
       :ram => 2048,
       :vcpu => 1,
-      :ip => "192.168.29.3" 
+      :ip => "192.168.29.3"
     },
-    { 
+    {
       :name => "ansible-host",
-      :box => "Datacom_Centos7.3_gui_v3",
+      :box => "nhalm/centos7-gui",
       :ram => 4048,
       :vcpu => 1,
-      :ip => "192.168.29.4" 
+      :ip => "192.168.29.4"
     }
   ]
 
@@ -45,11 +45,11 @@ Vagrant.configure("2") do |config|
         v.cpus = opts[:vcpu]
       end
       config.vm.network :private_network, ip: opts[:ip]
-        
+
       # Provision both VMs using Ansible after the last VM is booted.
       if opts[:name] == "WLGLRCAL001"
       config.vm.provider :virtualbox do |vb|
-       unless File.exist?(file_to_disk0) 
+       unless File.exist?(file_to_disk0)
           vb.customize ['createhd', '--filename', file_to_disk0, '--size', 20 * 1024]
           end
         vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', file_to_disk0]
@@ -57,7 +57,7 @@ Vagrant.configure("2") do |config|
       end
       if opts[:name] == "WLGLEMAL001"
       config.vm.provider :virtualbox do |vb|
-        unless File.exist?(file_to_disk1) 
+        unless File.exist?(file_to_disk1)
             vb.customize ['createhd', '--filename', file_to_disk1, '--size', 20 * 1024]
             end
           vb.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', file_to_disk1]
@@ -141,6 +141,6 @@ Vagrant.configure("2") do |config|
         end
       end
     config.vm.provision :shell, path: "bootstrap-node.sh"
-   end    
+   end
   end
 end
