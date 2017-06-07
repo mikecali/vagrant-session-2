@@ -1,4 +1,4 @@
-# BAU Ansible training: Session 1
+# Ansible Environment: Session 1
 
 Multi-Machine Vagrant Environments:
 This Vagrantfile will create 3 Centos VM's to simulate Ansible control machine and 2 target hosts. 
@@ -71,7 +71,7 @@ Vagrant.configure("2") do |config|
     },
     {
       :name => "ansible-host",
-      :box => "Datacom_Centos7.3GUI",
+      :box => "x.x.x.xxx",
       :ram => 1024,
       :vcpu => 1,
       :ip => "192.168.29.4"
