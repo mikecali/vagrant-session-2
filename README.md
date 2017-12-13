@@ -1,4 +1,4 @@
-# Ansible Environment: Session 1
+# Ansible Environment: Session 2
 
 Multi-Machine Vagrant Environments:
 This Vagrantfile will create 3 Centos VM's to simulate Ansible control machine and 2 target hosts. 
