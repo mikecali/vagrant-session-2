@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
     {
       :name => "ansible-host",
       :box => "centos/7",
-      :ram => 4048,
+      :ram => 8048,
       :vcpu => 1,
       :ip => "192.168.29.4"
     }
@@ -38,7 +38,7 @@ Vagrant.configure("2") do |config|
       config.ssh.insert_key = false
       config.vm.box = opts[:box]
       config.vm.hostname = opts[:name]
-      config.vm.provider :libvirt do |v|
+      config.vm.provider :virtualbox do |v|
         v.memory = opts[:ram]
         v.cpus = opts[:vcpu]
       end

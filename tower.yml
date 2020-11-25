@@ -8,6 +8,11 @@
     ansible_tower_version: ansible-tower-setup-bundle-3.2.1-1.el7 
 
   tasks:
+    - name: verify if tower is installed
+      command: /usr/bin/ansible-tower-service status
+      register: tower
+      ignore_errors: yes
+
     - name: install wget on ansible-host only
       yum:
         name: wget
@@ -32,33 +37,50 @@
 
     - name: verify if installer is untar
       stat: 
-         path: /home/vagrant/ansible-tower-setup-bundle-3.2.1-1.el7/setup.sh
+         path: /home/vagrant/ansible-tower-setup-bundle*
       register: p
       when: "'ansible' in inventory_hostname"
 
     - name: untar tower Installer
+      # unarchive:
+      #  src: /home/vagrant/ansible-tower-setup-bundle-latest.el7.tar.gz
+      #  dest: /home/vagrant/installer
       shell: tar -xvf /home/vagrant/ansible-tower-setup-bundle-latest.el7.tar.gz
-      when: "'ansible' in inventory_hostname and p.stat.exists == False"
+      when: p.stat.exists == False
       ignore_errors: yes
     
     - name: Copy vagrant key
       copy:
-        src: /tmp/vagrant
-        dest: /home/vagrant/.ssh/vagrant
+        src: keys/vagrant
+        dest: /home/vagrant/.ssh/
         owner: vagrant
         group: vagrant
         mode: 0600
       when: "'ansible-host' in inventory_hostname"
 
+    - name: Find the correct installer directory 
+      find:
+        paths: /home/vagrant/
+        recurse: yes
+        file_type: directory
+        patterns: ['ansible-tower-setup-bundle*']
+      register: directory_result
+
+    - name: debug
+      debug: var=directory_result.files
+
+
     - name: Copy inventory file
       copy:
         src: tower/inventory
-        dest: /home/vagrant/ansible-tower-setup-bundle-3.2.1-1.el7/
+        dest: "{{ item.path }}"
         owner: vagrant
         group: vagrant
         mode: 0600
       when: "'ansible-host' in inventory_hostname"
-   
+      with_items: "{{ directory_result.files }}"
+
+
     - name: Create tower group
       group:
         name: awx
@@ -96,12 +118,33 @@
       command: ansible-tower-service start
       become_user: root
       register: tower_restart
-      when: "'ansible-host' in inventory_hostname and tower_status |failed"
+      when: 
+        - ansible-host' in inventory_hostname
+        - tower_status is failed
       ignore_errors: yes
 
+
+    - name: Verify installer file
+      find: 
+        paths: /home/vagrant/
+        recurse: yes
+        patterns: ['setup.sh']
+      register: installer_result
+
+    - name: debug
+      debug: var=installer_result.files
+
     - name: Install Tower
-      command: /home/vagrant/ansible-tower-setup-bundle-3.2.1-1.el7/setup.sh
-      when: "'ansible-host' in inventory_hostname"
-      become_user: root
+      command: "{{item.path }}" 
+      when: 
+        - "'ansible-host' in inventory_hostname"
+        - tower is failed
+      become: yes
       ignore_errors: yes
-      when: tower_status | failed or tower_restart | failed
+      with_items: "{{ installer_result.files }}"
+      register: result
+
+    - name: report status of install
+      command: ansible-tower-service status
+      when: result is succeeded
+
