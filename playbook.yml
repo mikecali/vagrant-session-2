@@ -11,8 +11,9 @@
   tasks:
     - name: add epel repository
       yum:
-         name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+         name: epel-release
          state: present
+ 
 
     - name: configure timezone
       timezone:
@@ -29,7 +30,7 @@
       with_items:
          - httpd
          - php
-         - php-mysql
+         - php-mysqlnd
          - git
       become: true
       when: "'web' in inventory_hostname"
