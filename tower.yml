@@ -12,12 +12,13 @@
       command: /usr/bin/ansible-tower-service status
       register: tower
       ignore_errors: yes
+      when: "'ansible-host' in inventory_hostname"
 
     - name: install wget on ansible-host only
       yum:
         name: wget
         state: latest
-      when: "'ansible' in inventory_hostname"
+      when: "'ansible-host' in inventory_hostname"
 
     - name: verify if installer is already downloaded
       stat: 
@@ -119,7 +120,7 @@
       become_user: root
       register: tower_restart
       when: 
-        - ansible-host' in inventory_hostname
+        - "'ansible-host' in inventory_hostname"
         - tower_status is failed
       ignore_errors: yes
 
@@ -145,6 +146,8 @@
       register: result
 
     - name: report status of install
-      command: ansible-tower-service status
-      when: result is succeeded
+      command: //usr/bin/ansible-tower-service status
+      when: 
+        - result is succeeded
+        - "'ansible-host' in inventory_hostname"
 

@@ -6,21 +6,21 @@ Vagrant.configure("2") do |config|
   boxes = [
     {
       :name => "web1.demo.com",
-      :box => "centos/7",
+      :box => "centos/8",
       :ram => 1024,
       :vcpu => 1,
       :ip => "192.168.29.2"
     },
     {
       :name => "web2.demo.com",
-      :box => "centos/7",
+      :box => "centos/8",
       :ram => 1024,
       :vcpu => 1,
       :ip => "192.168.29.3"
     },
     {
       :name => "ansible-host",
-      :box => "centos/7",
+      :box => "centos/8",
       :ram => 8048,
       :vcpu => 1,
       :ip => "192.168.29.4"
