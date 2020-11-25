@@ -136,9 +136,6 @@
         patterns: ['setup.sh']
       register: installer_result
 
-    - name: debug
-      debug: var=installer_result.files
-
     - name: Install Tower
       command: "{{item.path }}" 
       when: 

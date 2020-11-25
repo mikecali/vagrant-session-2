@@ -13,6 +13,21 @@ This Vagrantfile will create 3 Centos VM's to simulate Ansible control machine a
 Internet connection is a must!
 Make sure the VT support is enabled on your BIOS
 
+## Note: if the build fail because of the hypervisor errors. You need to follow this steps.
+
+First find out the name of the hypervisor:
+
+$ lsmod | grep kvm
+kvm_intel             204800  6
+kvm                   593920  1 kvm_intel
+irqbypass              16384  1 kvm
+
+The one we're interested in is kvm_intel. You might have another.
+
+Blacklist the hypervisor (run the following as root):
+
+$ echo 'blacklist kvm-intel' >> /etc/modprobe.d/blacklist.conf
+Restart your machine and try running vagrant again.
 
 * Vagrant - 1.9.x or higher
  * Vagrant plugins - vagrant-proxyconf - needed if you are running behind proxy
