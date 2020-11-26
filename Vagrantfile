@@ -48,6 +48,10 @@ Vagrant.configure("2") do |config|
          file.destination    = '/tmp/vagrant'
         end
       config.vm.provision :file do |file|
+        file.source     = './inventory-test.yaml'
+        file.destination    = '/home/vagrant/inventory-test.yaml'
+       end
+      config.vm.provision :file do |file|
         file.source     = './inventory'
         file.destination    = '/home/vagrant/inventory'
        end

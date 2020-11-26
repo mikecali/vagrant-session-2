@@ -72,12 +72,13 @@
         name: cockpit
         state: latest
       become_user: root
-
-    - name: Start Cockpit
-      service: 
-        state: started
+    
+    - name: enable cockpit
+      systemd:
         name: cockpit
-      become_user: root
+        state: started
+        enabled: yes
+      become: true
     
     - name: Allow Cockpit to access the vm
       lineinfile:
@@ -116,8 +117,49 @@
         state: restarted
         name: firewalld
       when: "'web' in inventory_hostname or 'ansible-host' in inventory_hostname"
-      become_user: root   
-  
+      become_user: root
+
+    - name: generate vagrant key
+      community.crypto.openssh_keypair:
+        path: /home/vagrant/.ssh/id_ssh_rsa
+        force: True
+      register: key_pair
+      when: "'ansible-host' in inventory_hostname"
+
+    - name: look inside the dir
+      find:
+        path: /home/vagrant/.ssh
+        file_type: directory
+      register: dir
+
+    - name: set_fact
+      set_fact:
+        sshdir: "{{ dir.files | map(attribute='path') | list }}"
+
+    - name: change file mode
+      file:
+        path: "{{ item }}"
+        owner: vagrant
+        group: vagrant
+        mode: 0644
+      with_items:
+        - "{{ sshdir }}"
+
+    - name: pull key from tower to local machine
+      fetch:
+        src: /home/vagrant/.ssh/id_ssh_rsa.pub
+        dest: /tmp/id_ssh_rsa.pub
+        flat: yes
+      when: "'ansible-host' in inventory_hostname"
+
+    - name: copy key from local machine to 
+      copy:
+        src: /tmp/id_ssh_rsa.pub
+        dest: /home/vagrant/.ssh/
+        mode: 0644
+        owner: vagrant  
+      when: "'web' in inventory_hostname" 
+
   handlers:
     - name: restart apache2
       service: name=apache2 state=restarted

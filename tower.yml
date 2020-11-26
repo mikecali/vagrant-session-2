@@ -50,7 +50,9 @@
       shell: tar -xvf /home/vagrant/ansible-tower-setup-bundle-latest.el8.tar.gz
       when: p.stat.exists == False
       ignore_errors: yes
-    
+      when: "'ansible-host' in inventory_hostname"
+
+
     - name: Copy vagrant key
       copy:
         src: keys/vagrant
